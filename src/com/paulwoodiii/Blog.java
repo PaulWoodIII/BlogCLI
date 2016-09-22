@@ -10,12 +10,14 @@ public class Blog {
     String author;
     String headline;
     String body;
+    int readCount;
     ArrayList<String> tags;
 
     //TODO Add tags function
 
     //Default Constructor
     Blog() {
+        readCount = 0;
     }
 
     public int getId() {
@@ -58,6 +60,14 @@ public class Blog {
         this.tags = tags;
     }
 
+    public int getReadCount() {
+        return readCount;
+    }
+
+    public void setReadCount(int readCount) {
+        this.readCount = readCount;
+    }
+
     @Override
     public String toString() {
         return "id: " + id + "\n\t by: " + author + '\'' + "\n\t headline: " + headline;
@@ -72,9 +82,10 @@ public class Blog {
 //                tagString = tagString.concat(", ");
 //            }
 //        }
-
-        return "id: " + id + "\n\t by: " + author + '\'' + "\n\t headline: " +
-                headline +  "\n\t body: " + body +  "\n\t tags: " + String.join(", ",tags);
+        this.readCount += 1;
+        return "id: " + id + "\n\t by: " + author + '\'' + "\t headline: " + headline +
+                " readCount: " + readCount + "\n\t body: " + body +  "\n\t tags: " +
+                String.join(", ",tags);
     }
 
 }

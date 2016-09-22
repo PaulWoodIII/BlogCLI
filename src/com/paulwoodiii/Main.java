@@ -1,7 +1,8 @@
 package com.paulwoodiii;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import jodd.json.*;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
@@ -13,8 +14,10 @@ public class Main {
         System.out.println("WELCOME");
         System.out.println("Lets start some blogging");
         System.out.println("What would you like to do?");
+        load();
         while(true) {
             mainMenu();
+            save();
         }
     }
 
@@ -37,6 +40,47 @@ public class Main {
                 int blogId = readBlogPrompt();
                 displayBlog(blogId);
                 break;
+        }
+    }
+
+    private static File blogFile(){
+        File f = new File("blogs.json");
+        return f;
+    }
+
+    private static void save(){
+        File f = blogFile();
+        JsonSerializer serializer = new JsonSerializer();
+        BlogWrapper wrap = new BlogWrapper();
+        wrap.blogs = blogs;
+        wrap.timeCreated = (int) System.currentTimeMillis();
+        String json = serializer.deep(true).serialize(wrap);
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(f);
+            fw.write(json);
+            fw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void load(){
+        File f = blogFile();
+        FileReader fr = null;
+        try {
+            fr = new FileReader(f);
+            int fileSize = (int) f.length();
+            char[] contents = new char[fileSize];
+            fr.read(contents,0,fileSize);
+            JsonParser parser = new JsonParser();
+            BlogWrapper wrap = parser.parse(contents, BlogWrapper.class);
+            System.out.println("Loaded: " + wrap.blogs);
+            if (wrap.blogs != null){
+                blogs = wrap.blogs;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -81,7 +125,7 @@ public class Main {
 
     private static int readBlogPrompt(){
         System.out.println("Input the id of the Blog you would like to read:");
-        System.out.println("-----------------------");
+        System.out.println("------------------------------------------------");
         String input = scanner.nextLine();
         int blogId;
         blogId = Integer.valueOf(input);
