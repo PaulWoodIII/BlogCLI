@@ -1,23 +1,29 @@
 package com.paulwoodiii;
 
-import jodd.json.*;
-import java.io.*;
-import java.util.*;
+import jodd.json.JsonParser;
+import jodd.json.JsonSerializer;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
     private static ArrayList<Blog> blogs = new ArrayList<>();
+    private static final String persistanceLocation = "blogs.json";
 
     public static void main(String[] args) {
 	// write your code here
         System.out.println("WELCOME");
         System.out.println("Lets start some blogging");
         System.out.println("What would you like to do?");
-        load();
+        blogs = load(persistanceLocation);
         while(true) {
             mainMenu();
-            save();
+            save(blogs, persistanceLocation);
         }
     }
 
@@ -48,8 +54,8 @@ public class Main {
         return f;
     }
 
-    private static void save(){
-        File f = blogFile();
+    public static void save(ArrayList<Blog> blogs, String filename){
+        File f = new File(filename);
         JsonSerializer serializer = new JsonSerializer();
         BlogWrapper wrap = new BlogWrapper();
         wrap.blogs = blogs;
@@ -65,9 +71,10 @@ public class Main {
         }
     }
 
-    private static void load(){
-        File f = blogFile();
+    public static ArrayList<Blog> load(String filename){
+        File f = new File(filename);
         FileReader fr = null;
+        ArrayList<Blog> blogs;
         try {
             fr = new FileReader(f);
             int fileSize = (int) f.length();
@@ -78,10 +85,12 @@ public class Main {
             System.out.println("Loaded: " + wrap.blogs);
             if (wrap.blogs != null){
                 blogs = wrap.blogs;
+                return blogs;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return new ArrayList<Blog>();
     }
 
     private static Blog createBlog(){

@@ -88,4 +88,25 @@ public class Blog {
                 String.join(", ",tags);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Blog)) return false;
+
+        Blog blog = (Blog) o;
+
+        if (getId() != blog.getId()) return false;
+        if (getReadCount() != blog.getReadCount()) return false;
+        if (getAuthor() != null ? !getAuthor().equals(blog.getAuthor()) : blog.getAuthor() != null) return false;
+        if (getHeadline() != null ? !getHeadline().equals(blog.getHeadline()) : blog.getHeadline() != null)
+            return false;
+        if (getBody() != null ? !getBody().equals(blog.getBody()) : blog.getBody() != null) return false;
+        return getTags() != null ? getTags().equals(blog.getTags()) : blog.getTags() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
 }
